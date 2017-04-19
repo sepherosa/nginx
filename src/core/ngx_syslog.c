@@ -197,6 +197,9 @@ ngx_syslog_parse_args(ngx_conf_t *cf, ngx_syslog_peer_t *peer)
         } else if (len == 10 && ngx_strncmp(p, "nohostname", 10) == 0) {
             peer->nohostname = 1;
 
+        } else if (len == 7 && ngx_strncmp(p, "rfc5424", 7) == 0) {
+            peer->rfc5424 = 1;
+
         } else {
             ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
                                "unknown syslog parameter \"%s\"", p);
@@ -222,6 +225,20 @@ ngx_syslog_add_header(ngx_syslog_peer_t *peer, u_char *buf)
     ngx_uint_t  pri;
 
     pri = peer->facility * 8 + peer->severity;
+
+    if (peer->rfc5424) {
+        /*
+         * MSGID and PROCID are NILVALUEs.
+         */
+        if (peer->nohostname) {
+            return ngx_sprintf(buf, "<%ui>1 %V - %V - - ", pri,
+                               &ngx_cached_http_log_iso8601, &peer->tag);
+        }
+
+        return ngx_sprintf(buf, "<%ui>1 %V %V %V - - ", pri,
+                           &ngx_cached_http_log_iso8601, &ngx_cycle->hostname,
+                           &peer->tag);
+    }
 
     if (peer->nohostname) {
         return ngx_sprintf(buf, "<%ui>%V %V: ", pri, &ngx_cached_syslog_time,

@@ -18,6 +18,7 @@ typedef struct {
     ngx_connection_t  conn;
     unsigned          busy:1;
     unsigned          nohostname:1;
+    unsigned          rfc5424:1;
 } ngx_syslog_peer_t;
 
 
