@@ -926,14 +926,14 @@ ngx_http_log_variable_compile(ngx_conf_t *cf, ngx_http_log_op_t *op,
     op->len = 0;
 
     switch (escape) {
-    case NGX_FMT_ESCAPE_RFC5424SD:
-        op->getlen = ngx_http_log_rfc5424sd_variable_getlen;
-        op->run = ngx_http_log_rfc5424sd_variable;
-        break;
-
     case NGX_FMT_ESCAPE_JSON:
         op->getlen = ngx_http_log_json_variable_getlen;
         op->run = ngx_http_log_json_variable;
+        break;
+
+    case NGX_FMT_ESCAPE_RFC5424SD:
+        op->getlen = ngx_http_log_rfc5424sd_variable_getlen;
+        op->run = ngx_http_log_rfc5424sd_variable;
         break;
 
     default:
