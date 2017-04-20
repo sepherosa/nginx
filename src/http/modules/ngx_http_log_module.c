@@ -131,7 +131,7 @@ static u_char *ngx_http_log_request_length(ngx_http_request_t *r, u_char *buf,
     ngx_http_log_op_t *op);
 
 static ngx_int_t ngx_http_log_variable_compile(ngx_conf_t *cf,
-    ngx_http_log_op_t *op, ngx_str_t *value, ngx_uint_t json);
+    ngx_http_log_op_t *op, ngx_str_t *value, ngx_uint_t escape);
 static size_t ngx_http_log_variable_getlen(ngx_http_request_t *r,
     uintptr_t data);
 static u_char *ngx_http_log_variable(ngx_http_request_t *r, u_char *buf,
