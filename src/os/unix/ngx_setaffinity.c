@@ -18,7 +18,8 @@ ngx_setaffinity(ngx_cpuset_t *cpu_affinity, ngx_log_t *log)
     for (i = 0; i < CPU_SETSIZE; i++) {
         if (CPU_ISSET(i, cpu_affinity)) {
             ngx_log_error(NGX_LOG_NOTICE, log, 0,
-                          "cpuset_setaffinity(): using cpu #%ui", i);
+                          "cpuset_setaffinity(): worker #%ui uses cpu #%ui",
+                          ngx_worker, i);
         }
     }
 
@@ -40,7 +41,8 @@ ngx_setaffinity(ngx_cpuset_t *cpu_affinity, ngx_log_t *log)
     for (i = 0; i < CPU_SETSIZE; i++) {
         if (CPU_ISSET(i, cpu_affinity)) {
             ngx_log_error(NGX_LOG_NOTICE, log, 0,
-                          "sched_setaffinity(): using cpu #%ui", i);
+                          "sched_setaffinity(): worker #%ui uses cpu #%ui",
+                          ngx_worker, i);
         }
     }
 
