@@ -1,0 +1,62 @@
+
+# Copyright (C) Igor Sysoev
+# Copyright (C) Nginx, Inc.
+
+
+have=NGX_FREEBSD . auto/have_headers
+
+CORE_INCS="$UNIX_INCS"
+CORE_DEPS="$UNIX_DEPS $FREEBSD_DEPS"
+CORE_SRCS="$UNIX_SRCS $FREEBSD_SRCS"
+
+ngx_spacer='
+'
+
+
+# __DragonFly_version and sysctl kern.osreldate are the best ways
+# to determine whether some capability exists and is safe to use.
+# __DragonFly_version is used for the testing of the build environment.
+
+version=`grep "#define __DragonFly_version" /usr/include/osreldate.h \
+         | sed -e 's/^.* \(.*\)$/\1/'`
+
+
+# sendfile
+
+echo " + sendfile() found"
+
+have=NGX_HAVE_SENDFILE . auto/have
+CORE_SRCS="$CORE_SRCS $FREEBSD_SENDFILE_SRCS"
+
+
+# kqueue
+
+echo " + kqueue found"
+
+have=NGX_HAVE_KQUEUE . auto/have
+have=NGX_HAVE_CLEAR_EVENT . auto/have
+EVENT_MODULES="$EVENT_MODULES $KQUEUE_MODULE"
+CORE_SRCS="$CORE_SRCS $KQUEUE_SRCS"
+EVENT_FOUND=YES
+
+
+NGX_KQUEUE_CHECKED=YES
+
+
+# kqueue's NOTE_LOWAT
+
+echo " + kqueue's NOTE_LOWAT found"
+have=NGX_HAVE_LOWAT_EVENT . auto/have
+
+# kqueue's EVFILT_TIMER
+
+echo " + kqueue's EVFILT_TIMER found"
+have=NGX_HAVE_TIMER_EVENT . auto/have
+
+
+# sched_setaffinity()
+
+if [ $version -ge 400902 ]; then
+    echo " + sched_setaffinity() found"
+    have=NGX_HAVE_SCHED_SETAFFINITY . auto/have
+fi
